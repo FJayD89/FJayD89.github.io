@@ -4429,6 +4429,8 @@ function _Browser_load(url)
 		}
 	}));
 }
+var $author$project$Main$Easy = {$: 'Easy'};
+var $elm$core$Basics$False = {$: 'False'};
 var $author$project$Main$Empty = {$: 'Empty'};
 var $author$project$Main$Full = {$: 'Full'};
 var $elm$core$Basics$apR = F2(
@@ -4533,7 +4535,6 @@ var $elm$core$Array$shiftStep = $elm$core$Basics$ceiling(
 	A2($elm$core$Basics$logBase, 2, $elm$core$Array$branchFactor));
 var $elm$core$Array$empty = A4($elm$core$Array$Array_elm_builtin, 0, $elm$core$Array$shiftStep, $elm$core$Elm$JsArray$empty, $elm$core$Elm$JsArray$empty);
 var $elm$core$Elm$JsArray$initialize = _JsArray_initialize;
-var $elm$core$Basics$False = {$: 'False'};
 var $elm$core$Array$Leaf = function (a) {
 	return {$: 'Leaf', a: a};
 };
@@ -4797,7 +4798,7 @@ var $author$project$Main$setg = F4(
 				g);
 		}
 	});
-var $author$project$Main$init = A4(
+var $author$project$Main$initGrid = A4(
 	$author$project$Main$setg,
 	0,
 	0,
@@ -4806,6 +4807,7 @@ var $author$project$Main$init = A4(
 		$elm$core$Array$repeat,
 		$author$project$Main$gridsize,
 		A2($elm$core$Array$repeat, $author$project$Main$gridsize, $author$project$Main$Empty)));
+var $author$project$Main$init = {difficulty: $author$project$Main$Easy, grid: $author$project$Main$initGrid, moves: 0, unlocked: false};
 var $elm$core$Result$Err = function (a) {
 	return {$: 'Err', a: a};
 };
@@ -5404,13 +5406,13 @@ var $author$project$Main$mconcat = function (l) {
 			l));
 };
 var $author$project$Main$free = F3(
-	function (x, y, model) {
+	function (x, y, grid) {
 		return _Utils_eq(
 			$author$project$Main$mconcat(
 				A2(
 					$elm$core$List$map,
 					function (p) {
-						return A2($author$project$Main$getg, p, model);
+						return A2($author$project$Main$getg, p, grid);
 					},
 					_List_fromArray(
 						[
@@ -5420,57 +5422,6 @@ var $author$project$Main$free = F3(
 						]))),
 			_List_fromArray(
 				[$author$project$Main$Full, $author$project$Main$Empty, $author$project$Main$Empty]));
-	});
-var $author$project$Main$update = F2(
-	function (msg, model) {
-		if (msg.$ === 'Poke') {
-			var x = msg.a;
-			var y = msg.b;
-			return A3($author$project$Main$free, x, y, model) ? A4(
-				$author$project$Main$setg,
-				x,
-				y + 1,
-				$author$project$Main$Full,
-				A4(
-					$author$project$Main$setg,
-					x + 1,
-					y,
-					$author$project$Main$Full,
-					A4($author$project$Main$setg, x, y, $author$project$Main$Empty, model))) : model;
-		} else {
-			return $author$project$Main$init;
-		}
-	});
-var $author$project$Main$Reset = {$: 'Reset'};
-var $elm$html$Html$button = _VirtualDom_node('button');
-var $elm$html$Html$div = _VirtualDom_node('div');
-var $author$project$Main$px = function (x) {
-	return $elm$core$String$fromInt(x) + 'px';
-};
-var $elm$virtual_dom$VirtualDom$style = _VirtualDom_style;
-var $elm$html$Html$Attributes$style = $elm$virtual_dom$VirtualDom$style;
-var $author$project$Main$tilesize = 50;
-var $author$project$Main$innerbox = F2(
-	function (size, col) {
-		return A2(
-			$elm$html$Html$div,
-			_List_fromArray(
-				[
-					A2(
-					$elm$html$Html$Attributes$style,
-					'height',
-					$author$project$Main$px(($author$project$Main$tilesize * size) - 10)),
-					A2(
-					$elm$html$Html$Attributes$style,
-					'width',
-					$author$project$Main$px(($author$project$Main$tilesize * size) - 10)),
-					A2(
-					$elm$html$Html$Attributes$style,
-					'border',
-					$author$project$Main$px(5) + (' solid ' + col)),
-					A2($elm$html$Html$Attributes$style, 'position', 'absolute')
-				]),
-			_List_Nil);
 	});
 var $elm$core$List$any = F2(
 	function (isOkay, list) {
@@ -5506,6 +5457,13 @@ var $elm$core$List$all = F2(
 			A2($elm$core$Basics$composeL, $elm$core$Basics$not, isOkay),
 			list);
 	});
+var $author$project$Main$desc = function (difficulty) {
+	if (difficulty.$ === 'Easy') {
+		return {color: 'orange', target: 2};
+	} else {
+		return {color: 'red', target: 3};
+	}
+};
 var $elm$core$List$filter = F2(
 	function (isGood, list) {
 		return A3(
@@ -5542,7 +5500,6 @@ var $elm$core$Array$map = F2(
 			A2($elm$core$Elm$JsArray$map, helper, tree),
 			A2($elm$core$Elm$JsArray$map, func, tail));
 	});
-var $author$project$Main$target = 2;
 var $elm$core$Tuple$second = function (_v0) {
 	var y = _v0.b;
 	return y;
@@ -5567,6 +5524,7 @@ var $elm$core$Array$toIndexedList = function (array) {
 		array).b;
 };
 var $author$project$Main$iswon = function (model) {
+	var t = $author$project$Main$desc(model.difficulty).target;
 	return A2(
 		$elm$core$List$all,
 		function (_v4) {
@@ -5579,7 +5537,7 @@ var $author$project$Main$iswon = function (model) {
 				var _v3 = _v2.a;
 				var x = _v3.a;
 				var y = _v3.b;
-				return (_Utils_cmp(x, $author$project$Main$target) < 0) && (_Utils_cmp(y, $author$project$Main$target) < 0);
+				return (_Utils_cmp(x, t) < 0) && (_Utils_cmp(y, t) < 0);
 			},
 			$elm$core$List$concat(
 				A2(
@@ -5599,8 +5557,101 @@ var $author$project$Main$iswon = function (model) {
 							l);
 					},
 					$elm$core$Array$toIndexedList(
-						A2($elm$core$Array$map, $elm$core$Array$toIndexedList, model))))));
+						A2($elm$core$Array$map, $elm$core$Array$toIndexedList, model.grid))))));
 };
+var $author$project$Main$poke = F3(
+	function (x, y, model) {
+		var free_ = A3($author$project$Main$free, x, y, model.grid);
+		var _v0 = free_ ? _Utils_Tuple2(
+			A4(
+				$author$project$Main$setg,
+				x,
+				y + 1,
+				$author$project$Main$Full,
+				A4(
+					$author$project$Main$setg,
+					x + 1,
+					y,
+					$author$project$Main$Full,
+					A4($author$project$Main$setg, x, y, $author$project$Main$Empty, model.grid))),
+			model.moves + 1) : _Utils_Tuple2(model.grid, model.moves);
+		var grid_ = _v0.a;
+		var moves_ = _v0.b;
+		var model_ = _Utils_update(
+			model,
+			{grid: grid_, moves: moves_});
+		return $author$project$Main$iswon(model_) ? _Utils_update(
+			model_,
+			{unlocked: true}) : model_;
+	});
+var $author$project$Main$resetState = function (model) {
+	return _Utils_update(
+		model,
+		{grid: $author$project$Main$initGrid, moves: 0});
+};
+var $author$project$Main$update = F2(
+	function (msg, model) {
+		switch (msg.$) {
+			case 'Poke':
+				var x = msg.a;
+				var y = msg.b;
+				return A3($author$project$Main$poke, x, y, model);
+			case 'Reset':
+				return $author$project$Main$resetState(model);
+			default:
+				var d = msg.a;
+				return $author$project$Main$resetState(
+					_Utils_update(
+						model,
+						{difficulty: d}));
+		}
+	});
+var $author$project$Main$Hard = {$: 'Hard'};
+var $author$project$Main$Reset = {$: 'Reset'};
+var $author$project$Main$SetDifficulty = function (a) {
+	return {$: 'SetDifficulty', a: a};
+};
+var $elm$html$Html$button = _VirtualDom_node('button');
+var $elm$json$Json$Encode$bool = _Json_wrap;
+var $elm$html$Html$Attributes$boolProperty = F2(
+	function (key, bool) {
+		return A2(
+			_VirtualDom_property,
+			key,
+			$elm$json$Json$Encode$bool(bool));
+	});
+var $elm$html$Html$Attributes$checked = $elm$html$Html$Attributes$boolProperty('checked');
+var $elm$html$Html$div = _VirtualDom_node('div');
+var $author$project$Main$px = function (x) {
+	return $elm$core$String$fromInt(x) + 'px';
+};
+var $elm$virtual_dom$VirtualDom$style = _VirtualDom_style;
+var $elm$html$Html$Attributes$style = $elm$virtual_dom$VirtualDom$style;
+var $author$project$Main$tilesize = 50;
+var $author$project$Main$innerbox = F2(
+	function (size, col) {
+		return A2(
+			$elm$html$Html$div,
+			_List_fromArray(
+				[
+					A2(
+					$elm$html$Html$Attributes$style,
+					'height',
+					$author$project$Main$px(($author$project$Main$tilesize * size) - 10)),
+					A2(
+					$elm$html$Html$Attributes$style,
+					'width',
+					$author$project$Main$px(($author$project$Main$tilesize * size) - 10)),
+					A2(
+					$elm$html$Html$Attributes$style,
+					'border',
+					$author$project$Main$px(5) + (' solid ' + col)),
+					A2($elm$html$Html$Attributes$style, 'position', 'absolute')
+				]),
+			_List_Nil);
+	});
+var $elm$html$Html$input = _VirtualDom_node('input');
+var $elm$html$Html$label = _VirtualDom_node('label');
 var $author$project$Main$Poke = F2(
 	function (a, b) {
 		return {$: 'Poke', a: a, b: b};
@@ -5695,6 +5746,15 @@ var $author$project$Main$makeTiles = function (model) {
 						$elm$core$Array$toIndexedList(
 							A2($elm$core$Array$map, $elm$core$Array$toIndexedList, model)))))));
 };
+var $elm$json$Json$Encode$string = _Json_wrap;
+var $elm$html$Html$Attributes$stringProperty = F2(
+	function (key, string) {
+		return A2(
+			_VirtualDom_property,
+			key,
+			$elm$json$Json$Encode$string(string));
+	});
+var $elm$html$Html$Attributes$name = $elm$html$Html$Attributes$stringProperty('name');
 var $elm$html$Html$Events$onClick = function (msg) {
 	return A2(
 		$elm$html$Html$Events$on,
@@ -5702,7 +5762,10 @@ var $elm$html$Html$Events$onClick = function (msg) {
 		$elm$json$Json$Decode$succeed(msg));
 };
 var $elm$html$Html$p = _VirtualDom_node('p');
+var $elm$html$Html$Attributes$type_ = $elm$html$Html$Attributes$stringProperty('type');
 var $author$project$Main$view = function (model) {
+	var t = $author$project$Main$desc(model.difficulty).target;
+	var c = $author$project$Main$desc(model.difficulty).color;
 	return A2(
 		$elm$html$Html$div,
 		_List_Nil,
@@ -5733,10 +5796,12 @@ var $author$project$Main$view = function (model) {
 				_Utils_ap(
 					_List_fromArray(
 						[
-							A2($author$project$Main$innerbox, $author$project$Main$target, 'red'),
-							A2($author$project$Main$innerbox, 2, 'orange')
+							A2(
+							$author$project$Main$innerbox,
+							t,
+							$author$project$Main$desc(model.difficulty).color)
 						]),
-					$author$project$Main$makeTiles(model))),
+					$author$project$Main$makeTiles(model.grid))),
 				A2(
 				$elm$html$Html$button,
 				_List_fromArray(
@@ -5752,6 +5817,14 @@ var $author$project$Main$view = function (model) {
 				_List_Nil,
 				_List_fromArray(
 					[
+						$elm$html$Html$text(
+						'#' + $elm$core$String$fromInt(model.moves))
+					])),
+				A2(
+				$elm$html$Html$p,
+				_List_Nil,
+				_List_fromArray(
+					[
 						$elm$html$Html$text('Figure out rules')
 					])),
 				A2(
@@ -5759,7 +5832,7 @@ var $author$project$Main$view = function (model) {
 				_List_Nil,
 				_List_fromArray(
 					[
-						$elm$html$Html$text('Get boxes out of red square')
+						$elm$html$Html$text('Get boxes out of ' + (c + ' square'))
 					])),
 				A2(
 				$elm$html$Html$p,
@@ -5773,6 +5846,57 @@ var $author$project$Main$view = function (model) {
 				_List_fromArray(
 					[
 						$elm$html$Html$text('WON!!')
+					])),
+				A2(
+				$elm$html$Html$div,
+				_List_fromArray(
+					[
+						A2(
+						$elm$html$Html$Attributes$style,
+						'visibility',
+						model.unlocked ? 'visible' : 'hidden')
+					]),
+				_List_fromArray(
+					[
+						$elm$html$Html$text('Choose your lunch:'),
+						A2(
+						$elm$html$Html$label,
+						_List_Nil,
+						_List_fromArray(
+							[
+								A2(
+								$elm$html$Html$input,
+								_List_fromArray(
+									[
+										$elm$html$Html$Attributes$type_('radio'),
+										$elm$html$Html$Attributes$name('lunch'),
+										$elm$html$Html$Events$onClick(
+										$author$project$Main$SetDifficulty($author$project$Main$Easy)),
+										$elm$html$Html$Attributes$checked(
+										_Utils_eq(model.difficulty, $author$project$Main$Easy))
+									]),
+								_List_Nil),
+								$elm$html$Html$text('Easy')
+							])),
+						A2(
+						$elm$html$Html$label,
+						_List_Nil,
+						_List_fromArray(
+							[
+								A2(
+								$elm$html$Html$input,
+								_List_fromArray(
+									[
+										$elm$html$Html$Attributes$type_('radio'),
+										$elm$html$Html$Attributes$name('lunch'),
+										$elm$html$Html$Events$onClick(
+										$author$project$Main$SetDifficulty($author$project$Main$Hard)),
+										$elm$html$Html$Attributes$checked(
+										_Utils_eq(model.difficulty, $author$project$Main$Hard))
+									]),
+								_List_Nil),
+								$elm$html$Html$text('Hard')
+							]))
 					]))
 			]));
 };
