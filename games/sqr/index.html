@@ -5396,7 +5396,8 @@ var $author$project$Main$mconcat = function (l) {
 			$elm$core$List$map,
 			function (m) {
 				if (m.$ === 'Nothing') {
-					return _List_Nil;
+					return _List_fromArray(
+						[$author$project$Main$Empty]);
 				} else {
 					var x = m.a;
 					return _List_fromArray(
@@ -5523,41 +5524,44 @@ var $elm$core$Array$toIndexedList = function (array) {
 		_Utils_Tuple2(len - 1, _List_Nil),
 		array).b;
 };
+var $author$project$Main$toAssoc = function (grid) {
+	return $elm$core$List$concat(
+		A2(
+			$elm$core$List$map,
+			function (_v0) {
+				var y = _v0.a;
+				var l = _v0.b;
+				return A2(
+					$elm$core$List$map,
+					function (_v1) {
+						var x = _v1.a;
+						var c = _v1.b;
+						return _Utils_Tuple2(
+							_Utils_Tuple2(x, y),
+							c);
+					},
+					l);
+			},
+			$elm$core$Array$toIndexedList(
+				A2($elm$core$Array$map, $elm$core$Array$toIndexedList, grid))));
+};
 var $author$project$Main$iswon = function (model) {
 	var t = $author$project$Main$desc(model.difficulty).target;
 	return A2(
 		$elm$core$List$all,
-		function (_v4) {
-			var c = _v4.b;
+		function (_v2) {
+			var c = _v2.b;
 			return _Utils_eq(c, $author$project$Main$Empty);
 		},
 		A2(
 			$elm$core$List$filter,
-			function (_v2) {
-				var _v3 = _v2.a;
-				var x = _v3.a;
-				var y = _v3.b;
+			function (_v0) {
+				var _v1 = _v0.a;
+				var x = _v1.a;
+				var y = _v1.b;
 				return (_Utils_cmp(x, t) < 0) && (_Utils_cmp(y, t) < 0);
 			},
-			$elm$core$List$concat(
-				A2(
-					$elm$core$List$map,
-					function (_v0) {
-						var y = _v0.a;
-						var l = _v0.b;
-						return A2(
-							$elm$core$List$map,
-							function (_v1) {
-								var x = _v1.a;
-								var c = _v1.b;
-								return _Utils_Tuple2(
-									_Utils_Tuple2(x, y),
-									c);
-							},
-							l);
-					},
-					$elm$core$Array$toIndexedList(
-						A2($elm$core$Array$map, $elm$core$Array$toIndexedList, model.grid))))));
+			$author$project$Main$toAssoc(model.grid)));
 };
 var $author$project$Main$poke = F3(
 	function (x, y, model) {
@@ -5711,7 +5715,7 @@ var $author$project$Main$tile = function (_v0) {
 				$elm$html$Html$text('--')
 			]));
 };
-var $author$project$Main$makeTiles = function (model) {
+var $author$project$Main$makeTiles = function (grid) {
 	return A2(
 		$elm$core$List$map,
 		function (p) {
@@ -5722,29 +5726,11 @@ var $author$project$Main$makeTiles = function (model) {
 			$elm$core$Tuple$first,
 			A2(
 				$elm$core$List$filter,
-				function (_v2) {
-					var c = _v2.b;
+				function (_v0) {
+					var c = _v0.b;
 					return _Utils_eq(c, $author$project$Main$Full);
 				},
-				$elm$core$List$concat(
-					A2(
-						$elm$core$List$map,
-						function (_v0) {
-							var y = _v0.a;
-							var l = _v0.b;
-							return A2(
-								$elm$core$List$map,
-								function (_v1) {
-									var x = _v1.a;
-									var c = _v1.b;
-									return _Utils_Tuple2(
-										_Utils_Tuple2(x, y),
-										c);
-								},
-								l);
-						},
-						$elm$core$Array$toIndexedList(
-							A2($elm$core$Array$map, $elm$core$Array$toIndexedList, model)))))));
+				$author$project$Main$toAssoc(grid))));
 };
 var $elm$json$Json$Encode$string = _Json_wrap;
 var $elm$html$Html$Attributes$stringProperty = F2(
@@ -5762,6 +5748,7 @@ var $elm$html$Html$Events$onClick = function (msg) {
 		$elm$json$Json$Decode$succeed(msg));
 };
 var $elm$html$Html$p = _VirtualDom_node('p');
+var $elm$html$Html$span = _VirtualDom_node('span');
 var $elm$html$Html$Attributes$type_ = $elm$html$Html$Attributes$stringProperty('type');
 var $author$project$Main$view = function (model) {
 	var t = $author$project$Main$desc(model.difficulty).target;
@@ -5803,99 +5790,134 @@ var $author$project$Main$view = function (model) {
 						]),
 					$author$project$Main$makeTiles(model.grid))),
 				A2(
-				$elm$html$Html$button,
-				_List_fromArray(
-					[
-						$elm$html$Html$Events$onClick($author$project$Main$Reset)
-					]),
-				_List_fromArray(
-					[
-						$elm$html$Html$text('reset')
-					])),
-				A2(
-				$elm$html$Html$p,
-				_List_Nil,
-				_List_fromArray(
-					[
-						$elm$html$Html$text(
-						'#' + $elm$core$String$fromInt(model.moves))
-					])),
-				A2(
-				$elm$html$Html$p,
-				_List_Nil,
-				_List_fromArray(
-					[
-						$elm$html$Html$text('Figure out rules')
-					])),
-				A2(
-				$elm$html$Html$p,
-				_List_Nil,
-				_List_fromArray(
-					[
-						$elm$html$Html$text('Get boxes out of ' + (c + ' square'))
-					])),
-				A2(
-				$elm$html$Html$p,
-				_List_fromArray(
-					[
-						A2(
-						$elm$html$Html$Attributes$style,
-						'visibility',
-						$author$project$Main$iswon(model) ? 'visible' : 'hidden')
-					]),
-				_List_fromArray(
-					[
-						$elm$html$Html$text('WON!!')
-					])),
-				A2(
 				$elm$html$Html$div,
 				_List_fromArray(
 					[
+						A2($elm$html$Html$Attributes$style, 'border', '5px solid'),
 						A2(
 						$elm$html$Html$Attributes$style,
-						'visibility',
-						model.unlocked ? 'visible' : 'hidden')
+						'padding',
+						$author$project$Main$px(10)),
+						A2(
+						$elm$html$Html$Attributes$style,
+						'margin',
+						$author$project$Main$px(5))
 					]),
 				_List_fromArray(
 					[
-						$elm$html$Html$text('Choose your lunch:'),
 						A2(
-						$elm$html$Html$label,
-						_List_Nil,
+						$elm$html$Html$span,
 						_List_fromArray(
 							[
 								A2(
-								$elm$html$Html$input,
+								$elm$html$Html$Attributes$style,
+								'margin',
+								$author$project$Main$px(25))
+							]),
+						_List_fromArray(
+							[
+								A2(
+								$elm$html$Html$button,
 								_List_fromArray(
 									[
-										$elm$html$Html$Attributes$type_('radio'),
-										$elm$html$Html$Attributes$name('lunch'),
-										$elm$html$Html$Events$onClick(
-										$author$project$Main$SetDifficulty($author$project$Main$Easy)),
-										$elm$html$Html$Attributes$checked(
-										_Utils_eq(model.difficulty, $author$project$Main$Easy))
+										$elm$html$Html$Events$onClick($author$project$Main$Reset)
 									]),
-								_List_Nil),
-								$elm$html$Html$text('Easy')
+								_List_fromArray(
+									[
+										$elm$html$Html$text('reset')
+									]))
 							])),
 						A2(
-						$elm$html$Html$label,
-						_List_Nil,
+						$elm$html$Html$span,
 						_List_fromArray(
 							[
 								A2(
-								$elm$html$Html$input,
+								$elm$html$Html$Attributes$style,
+								'margin',
+								$author$project$Main$px(25))
+							]),
+						_List_fromArray(
+							[
+								$elm$html$Html$text(
+								'#' + $elm$core$String$fromInt(model.moves))
+							])),
+						A2(
+						$elm$html$Html$p,
+						_List_Nil,
+						_List_fromArray(
+							[
+								$elm$html$Html$text('Figure out rules')
+							])),
+						A2(
+						$elm$html$Html$p,
+						_List_Nil,
+						_List_fromArray(
+							[
+								$elm$html$Html$text('Get boxes out of ' + (c + ' square'))
+							])),
+						A2(
+						$elm$html$Html$p,
+						_List_fromArray(
+							[
+								A2(
+								$elm$html$Html$Attributes$style,
+								'visibility',
+								$author$project$Main$iswon(model) ? 'visible' : 'hidden')
+							]),
+						_List_fromArray(
+							[
+								$elm$html$Html$text('WON!!')
+							])),
+						A2(
+						$elm$html$Html$div,
+						_List_fromArray(
+							[
+								A2(
+								$elm$html$Html$Attributes$style,
+								'visibility',
+								model.unlocked ? 'visible' : 'hidden')
+							]),
+						_List_fromArray(
+							[
+								$elm$html$Html$text('Choose your lunch:'),
+								A2(
+								$elm$html$Html$label,
+								_List_Nil,
 								_List_fromArray(
 									[
-										$elm$html$Html$Attributes$type_('radio'),
-										$elm$html$Html$Attributes$name('lunch'),
-										$elm$html$Html$Events$onClick(
-										$author$project$Main$SetDifficulty($author$project$Main$Hard)),
-										$elm$html$Html$Attributes$checked(
-										_Utils_eq(model.difficulty, $author$project$Main$Hard))
-									]),
-								_List_Nil),
-								$elm$html$Html$text('Hard')
+										A2(
+										$elm$html$Html$input,
+										_List_fromArray(
+											[
+												$elm$html$Html$Attributes$type_('radio'),
+												$elm$html$Html$Attributes$name('lunch'),
+												$elm$html$Html$Events$onClick(
+												$author$project$Main$SetDifficulty($author$project$Main$Easy)),
+												$elm$html$Html$Attributes$checked(
+												_Utils_eq(model.difficulty, $author$project$Main$Easy))
+											]),
+										_List_Nil),
+										$elm$html$Html$text('Easy')
+									])),
+								A2(
+								$elm$html$Html$label,
+								_List_Nil,
+								_List_fromArray(
+									[
+										A2(
+										$elm$html$Html$input,
+										_List_fromArray(
+											[
+												$elm$html$Html$Attributes$type_('radio'),
+												$elm$html$Html$Attributes$name('lunch'),
+												$elm$html$Html$Events$onClick(
+												$author$project$Main$SetDifficulty($author$project$Main$Hard)),
+												$elm$html$Html$Attributes$checked(
+												_Utils_eq(model.difficulty, $author$project$Main$Hard))
+											]),
+										_List_Nil),
+										$elm$html$Html$text('Hard')
+									]))
 							]))
 					]))
 			]));
